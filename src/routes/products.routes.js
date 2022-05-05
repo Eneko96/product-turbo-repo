@@ -1,9 +1,10 @@
 import { Router } from 'express'
 import * as productController from '../controllers/products.controller'
+import { authJwt } from '../middlewares'
 const router = Router()
 
 router.get('/', productController.getProducts)
-router.post('/', productController.createProduct)
-router.delete('/:productId', productController.deleteProductById)
-router.put('/:productId', productController.updateProductById)
+router.post('/', [authJwt.verifyToken, authJwt.isModerator], productController.createProduct)
+router.delete('/:productId', authJwt.verifyToken, productController.deleteProductById)
+router.put('/:productId', [authJwt.verifyToken, authJwt.isModerator], productController.updateProductById)
 export default router
